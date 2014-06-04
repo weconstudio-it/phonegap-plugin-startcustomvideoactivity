@@ -8,7 +8,7 @@ if ( ! window.plugins ) {
   window.plugins = {}
 }
 if ( ! window.plugins.orientationLock ) {
-  window.plugins.orientationLock = new OrientationLock()
+  window.plugins.startcustomvideoactivity = new StartCustomVideoActivity()
 }
 
-module.exports = OrientationLock
+module.exports = StartCustomVideoActivity

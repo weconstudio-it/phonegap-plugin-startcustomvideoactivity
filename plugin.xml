@@ -39,7 +39,7 @@
 
 		<source-file src="src/com/plugin/phonegap/StartCustomVideoActivity.java" target-dir="src/com/plugin/phonegap/" />
 		
-		<source-file src="src/com/plugin/phonegap/StartCustomVideoActivity.java" target-dir="src/com/plugin/phonegap/" />
+		<source-file src="src/com/plugin/phonegap/FullscreenActivity.java" target-dir="src/com/plugin/phonegap/" />
 		<source-file src="src/com/plugin/phonegap/util/SystemUiHider.java" target-dir="src/com/plugin/phonegap/util/" />
 		<source-file src="src/com/plugin/phonegap/util/SystemUiHiderBase.java" target-dir="src/com/plugin/phonegap/util/" />
 		<source-file src="src/com/plugin/phonegap/util/SystemUiHiderHoneycomb.java" target-dir="src/com/plugin/phonegap/util/" />

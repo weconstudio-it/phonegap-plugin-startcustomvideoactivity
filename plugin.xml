@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		id="com.phonegap.plugins.StartCustomVideoActivity"
+		version="0.1">
+
+	<name>StartCustomVideoActivity</name>
+	<author>Weconstudio</author>
+
+	<description>
+		Esegue una activity contenente un video
+	</description>
+
+	<license>MIT</license>
+
+	<js-module src="www/startcustomvideoactivity.js" name="StartCustomVideoActivity">
+		<clobbers target="StartCustomVideoActivity" />
+	</js-module>
+
+	<engines>
+		<engine name="cordova" version=">=3.0.0" />
+	</engines>
+
+	<platform name="android">
+
+
+		<config-file target="AndroidManifest.xml" parent="/manifest/application">
+			<activity android:name="com.plugin.phonegap.StartCustomVideoActivity">
+				<intent-filter>
+		        </intent-filter>
+			</activity>
+		</config-file>
+
+		<config-file target="res/xml/config.xml" parent="/*">
+			<feature name="StartCustomVideoActivity" >
+				<param name="android-package" value="com.plugin.phonegap.StartCustomVideoActivity"/>
+			</feature>
+		</config-file>
+
+		<source-file src="src/com/plugin/phonegap/StartCustomVideoActivity.java" target-dir="src/com/plugin/phonegap/" />
+		
+		<source-file src="src/com/plugin/phonegap/StartCustomVideoActivity.java" target-dir="src/com/plugin/phonegap/" />
+		<source-file src="src/com/plugin/phonegap/util/SystemUiHider.java" target-dir="src/com/plugin/phonegap/util/" />
+		<source-file src="src/com/plugin/phonegap/util/SystemUiHiderBase.java" target-dir="src/com/plugin/phonegap/util/" />
+		<source-file src="src/com/plugin/phonegap/util/SystemUiHiderHoneycomb.java" target-dir="src/com/plugin/phonegap/util/" />
+		<source-file src="res/layout/activity_fullscreen.xml" target-dir="res/layout"/>
+		
+	</platform>
+</plugin>

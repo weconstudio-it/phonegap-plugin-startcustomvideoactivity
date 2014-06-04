@@ -25,7 +25,7 @@
 
 
 		<config-file target="AndroidManifest.xml" parent="/manifest/application">
-			<activity android:name="com.plugin.phonegap.StartCustomVideoActivity">
+			<activity android:name="com.plugin.phonegap.FullscreenActivity">
 				<intent-filter>
 		        </intent-filter>
 			</activity>

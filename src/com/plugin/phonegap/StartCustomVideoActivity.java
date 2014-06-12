@@ -21,7 +21,7 @@ public class StartCustomVideoActivity extends CordovaPlugin {
 	public boolean execute(String action, JSONArray arguments, CallbackContext callbackContext) {
 		if (action.equals("video"))  {
 		    Context context=this.cordova.getActivity().getApplicationContext();
-		    Intent intent=new Intent(context,FullscreenActivity.class);
+		    Intent intent=new Intent(context,VideoActivity.class);
 		    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
 		    
 		    context.startActivity(intent);

@@ -25,7 +25,11 @@
 
 
 		<config-file target="AndroidManifest.xml" parent="/manifest/application">
-			<activity android:name="com.plugin.phonegap.FullscreenActivity">
+			<activity android:name="com.plugin.phonegap.VideoActivity" android:configChanges="orientation|screenSize|keyboardHidden">
+				<intent-filter>
+		        </intent-filter>
+			</activity>
+			<activity android:name="com.plugin.phonegap.WebActivity">
 				<intent-filter>
 		        </intent-filter>
 			</activity>
@@ -39,11 +43,36 @@
 
 		<source-file src="src/com/plugin/phonegap/StartCustomVideoActivity.java" target-dir="src/com/plugin/phonegap/" />
 		
-		<source-file src="src/com/plugin/phonegap/FullscreenActivity.java" target-dir="src/com/plugin/phonegap/" />
+		<source-file src="src/com/plugin/phonegap/VideoActivity.java" target-dir="src/com/plugin/phonegap/" />
+		<source-file src="src/com/plugin/phonegap/WebActivity.java" target-dir="src/com/plugin/phonegap/" />
 		<source-file src="src/com/plugin/phonegap/util/SystemUiHider.java" target-dir="src/com/plugin/phonegap/util/" />
 		<source-file src="src/com/plugin/phonegap/util/SystemUiHiderBase.java" target-dir="src/com/plugin/phonegap/util/" />
 		<source-file src="src/com/plugin/phonegap/util/SystemUiHiderHoneycomb.java" target-dir="src/com/plugin/phonegap/util/" />
-		<source-file src="res/layout/activity_fullscreen.xml" target-dir="res/layout"/>
+		
+		<source-file src="src/it/weconstudio/utilities/Flags.java" target-dir="src/it/weconstudio/utilities/" />
+		<source-file src="src/it/weconstudio/utilities/JsonParser.java" target-dir="src/it/weconstudio/utilities/" />
+		<source-file src="src/it/weconstudio/utilities/ParserEventsListener.java" target-dir="src/it/weconstudio/utilities/" />
+		<source-file src="src/it/weconstudio/utilities/WebViewStatus.java" target-dir="src/it/weconstudio/utilities/" />
+		
+		<source-file src="res/layout/activity_video.xml" target-dir="res/layout"/>
+		<source-file src="res/layout/activity_web.xml" target-dir="res/layout"/>
+		
+		<source-file src="res/anim/fadein.xml" target-dir="res/anim"/>
+		<source-file src="res/anim/fadeout.xml" target-dir="res/anim"/>
+		
+		<source-file src="res/values/attrs.xml" target-dir="res/values"/>
+		<source-file src="res/values/colors.xml" target-dir="res/values"/>
+		<source-file src="res/values/dimens.xml" target-dir="res/values"/>
+		
+		<source-file src="res/drawable-hdpi/header_smartphone.png" target-dir="res/drawable-hdpi"/>
+		<source-file src="res/drawable-hdpi/icon_mosaico_home.png" target-dir="res/drawable-hdpi"/>
+		<source-file src="res/drawable-hdpi/icona_back.png" target-dir="res/drawable-hdpi"/>
+		<source-file src="res/drawable-hdpi/rsi_logo.png" target-dir="res/drawable-hdpi"/>
+		<source-file src="res/drawable-hdpi/icon_mosaico_1.png" target-dir="res/drawable-hdpi"/>
+		<source-file src="res/drawable-hdpi/icon_mosaico_2.png" target-dir="res/drawable-hdpi"/>
+		<source-file src="res/drawable-hdpi/icon_mosaico_3.png" target-dir="res/drawable-hdpi"/>
+		<source-file src="res/drawable-hdpi/icon_mosaico_4.png" target-dir="res/drawable-hdpi"/>
+		
 		
 	</platform>
 </plugin>

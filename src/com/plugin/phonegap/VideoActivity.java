@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -17,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -38,7 +40,7 @@ import it.weconstudio.utilities.WebViewStatus;
 public class VideoActivity extends Activity implements ParserEventsListener {
 
     // oggetto video
-    VideoView videoView = null;
+    WeVideoView videoView = null;
 
     // oggetti immagine
     ImageView imageViewPoster = null, imageViewRSILogo = null, imageViewBackVideo = null, imageView = null;
@@ -72,7 +74,7 @@ public class VideoActivity extends Activity implements ParserEventsListener {
 
         setContentView(getR("layout","activity_video"));
 
-        videoView = (VideoView) findViewById(getR("id","videoView"));
+        videoView = (WeVideoView) findViewById(getR("id","videoView"));
         imageView = (ImageView) findViewById(getR("id","imageView"));
         imageViewPoster = (ImageView) findViewById(getR("id","imageViewPoster"));
         imageViewBackVideo = (ImageView) findViewById(getR("id","imageViewBackVideo"));
@@ -94,9 +96,8 @@ public class VideoActivity extends Activity implements ParserEventsListener {
         textViewCamera3 = (TextView)findViewById(getR("id","textViewCamera3"));
         textViewCamera4 = (TextView)findViewById(getR("id","textViewCamera4"));
 
-        jsonFlags = Flags.getInstance(Uri.parse(Flags.serverName() + "_android_flags.json"));
+        jsonFlags = Flags.getInstance(Uri.parse(Flags.serverName() + "flags.json"));
         jsonFlags.reset(false);
-        jsonFlags.addListener(this);
 
         //Toast.makeText(getApplicationContext(), "CAMERA2", Toast.LENGTH_SHORT).show();
 
@@ -184,7 +185,7 @@ public class VideoActivity extends Activity implements ParserEventsListener {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
 
-                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT && currentCamera == 5) {
+                if ( /*getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT && */ currentCamera == 5) {
                     if (jsonFlags.isDataAvailable() && jsonFlags.get_streaming_video()) {
                         double w = view.getWidth() / 2.0;
                         double h = view.getHeight() / 2.0;
@@ -240,10 +241,20 @@ public class VideoActivity extends Activity implements ParserEventsListener {
             }
         });
 
+
+
         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mediaPlayer) {
                 progressBarVideo.setVisibility(View.INVISIBLE);
+
+
+                int screenWidth = getWindowManager().getDefaultDisplay().getWidth();
+                int screenHeight = getWindowManager().getDefaultDisplay().getHeight();
+                videoView.setScreenSize(screenWidth, screenHeight);
+                videoView.setMediaPlayer(mediaPlayer);
+                videoView.progressBar = progressBarVideo;
+
             }
         });
 
@@ -264,6 +275,8 @@ public class VideoActivity extends Activity implements ParserEventsListener {
     @Override
     protected void onStart() {
         super.onStart();
+
+        jsonFlags.addListener(this);
 
         if (jsonFlags.isDataAvailable()) {
             startPlayVideo(uriVideo);
@@ -344,15 +357,19 @@ public class VideoActivity extends Activity implements ParserEventsListener {
         try {
             if (videoView.isPlaying()) {
                 videoView.stopPlayback();
+                videoView.clearAnimation();
             }
 
-            videoView.setVisibility(View.VISIBLE);
+
             progressBarVideo.setVisibility(View.VISIBLE);
             imageViewPoster.setVisibility(View.INVISIBLE);
 
             videoView.setVideoURI(uriVideo);
 
             videoView.start();
+
+            videoView.setVisibility(View.VISIBLE);
+
         } catch (Exception e) {
             videoView.setVisibility(View.INVISIBLE);
             Log.d("startPlayVideo", e.toString());
@@ -439,6 +456,8 @@ public class VideoActivity extends Activity implements ParserEventsListener {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+
+
                 if  (orientation == Configuration.ORIENTATION_PORTRAIT) {
                     // in verticale il video non è a full screen
                     imageView.setVisibility(View.VISIBLE);

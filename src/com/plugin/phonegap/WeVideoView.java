@@ -9,17 +9,20 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.VideoView;
 
+import it.weconstudio.utilities.WeVideoViewSizeAvailable;
+
 /**
  * Created by niko on 6/12/14.
  */
 public class WeVideoView extends VideoView {
 
     public ProgressBar progressBar;
-
+    private WeVideoViewSizeAvailable sizeCallback = null;
     private MediaPlayer mediaPlayer = null;
 
     private int screenWidth = 0, screenHeight = 0;
 
+    public int videoWidth = 0, videoHeight = 0;
 
     public void setScreenSize(int screenWidth, int screenHeight){
         this.screenWidth = screenWidth;
@@ -40,23 +43,27 @@ public class WeVideoView extends VideoView {
         super(context, attrs);
     }
 
+    public void setCallback(WeVideoViewSizeAvailable callback) {
+        sizeCallback = callback;
+    }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 
         try {
-
-
             if (this.mediaPlayer != null) {
 
-                int videoWidth = this.mediaPlayer.getVideoWidth();
-                int videoHeight = this.mediaPlayer.getVideoHeight();
+                videoWidth = this.mediaPlayer.getVideoWidth();
+                videoHeight = this.mediaPlayer.getVideoHeight();
+
                 if(videoWidth == 0 || videoHeight == 0){
                     setMeasuredDimension(0, 0);
                     this.setBackgroundColor(Color.BLACK);
                     progressBar.setVisibility(VISIBLE);
                 }else {
                     progressBar.setVisibility(INVISIBLE);
+                    sizeCallback.sizeAvailable(videoWidth, videoHeight);
+
                     this.setBackgroundColor(Color.TRANSPARENT);
                     float videoProportion = (float) videoWidth / (float) videoHeight;
 

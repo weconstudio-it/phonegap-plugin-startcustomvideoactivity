@@ -2,10 +2,10 @@ package com.plugin.phonegap;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -16,15 +16,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -34,6 +35,7 @@ import java.net.URL;
 import it.weconstudio.utilities.Flags;
 import it.weconstudio.utilities.JsonParser;
 import it.weconstudio.utilities.ParserEventsListener;
+import it.weconstudio.utilities.WeVideoViewSizeAvailable;
 import it.weconstudio.utilities.WebViewStatus;
 
 
@@ -55,7 +57,14 @@ public class VideoActivity extends Activity implements ParserEventsListener {
     // camera corrente
     int currentCamera = 5;
 
+    double internalVideoProportions = 0.0;
+
+    // url webview in sovraimpressione
+    Uri[] uriWebView = new Uri[]{Uri.EMPTY,Uri.EMPTY,Uri.EMPTY,Uri.EMPTY};
+
     Uri uriVideo = Uri.EMPTY;
+
+    WebView[] webViewOver = {null, null, null, null};
 
     Flags jsonFlags;
 
@@ -81,6 +90,11 @@ public class VideoActivity extends Activity implements ParserEventsListener {
         imageViewRSILogo = (ImageView) findViewById(getR("id","imageViewRSILogoVideo"));
         progressBarVideo = (ProgressBar) findViewById(getR("id","progressBarVideo"));
 
+        webViewOver[0] = (WebView)findViewById(getR("id","webViewOver1"));
+        webViewOver[1] = (WebView)findViewById(getR("id","webViewOver2"));
+        webViewOver[2] = (WebView)findViewById(getR("id","webViewOver3"));
+        webViewOver[3] = (WebView)findViewById(getR("id","webViewOver4"));
+
         // pulsanti/immagini camera
         layoutCamera1 = (LinearLayout)findViewById(getR("id","linearLayout"));
 
@@ -96,7 +110,14 @@ public class VideoActivity extends Activity implements ParserEventsListener {
         textViewCamera3 = (TextView)findViewById(getR("id","textViewCamera3"));
         textViewCamera4 = (TextView)findViewById(getR("id","textViewCamera4"));
 
-        jsonFlags = Flags.getInstance(Uri.parse(Flags.serverName() + "flags.json"));
+        String jsonFileName = "flags.json"; // "_android_flags.json"
+
+        //boolean isDebuggable =  ( 0 != ( getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE ) );
+
+        //if (isDebuggable)
+        //    jsonFileName = "_android_flags.json";
+
+        jsonFlags = Flags.getInstance(Uri.parse(Flags.serverName() + jsonFileName));
         jsonFlags.reset(false);
 
         //Toast.makeText(getApplicationContext(), "CAMERA2", Toast.LENGTH_SHORT).show();
@@ -241,23 +262,37 @@ public class VideoActivity extends Activity implements ParserEventsListener {
             }
         });
 
-
-
         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mediaPlayer) {
                 progressBarVideo.setVisibility(View.INVISIBLE);
 
-
                 int screenWidth = getWindowManager().getDefaultDisplay().getWidth();
                 int screenHeight = getWindowManager().getDefaultDisplay().getHeight();
+
                 videoView.setScreenSize(screenWidth, screenHeight);
                 videoView.setMediaPlayer(mediaPlayer);
                 videoView.progressBar = progressBarVideo;
+                videoView.setCallback(new WeVideoViewSizeAvailable() {
+                    @Override
+                    public void sizeAvailable(int width, int height) {
 
+                        if (width == 0)
+                            return;
+
+                        double proportions = (double)height / (double)width;
+
+                        internalVideoProportions = proportions;
+
+                        //Log.d("PDPDPDPD", String.format("w: %d, h: %d, p: %f, w(): %d, caz: %d", width, height, proportions, webViewOver[0].getWidth(), (int)((double) webViewOver[0].getWidth() * proportions)));
+
+                        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)webViewOver[0].getLayoutParams();
+                        params.height = (int)((double) webViewOver[0].getWidth() * proportions);
+                        webViewOver[0].setLayoutParams(params);
+                    }
+                });
             }
         });
-
     }
 
     @Override
@@ -285,10 +320,21 @@ public class VideoActivity extends Activity implements ParserEventsListener {
 
     // Check screen orientation or screen rotate event here
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(final Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
-        manageOrientation(newConfig.orientation);
+        final View view = findViewById(getR("id","videoView"));
+
+        ViewTreeObserver observer = view.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+            @Override
+            public void onGlobalLayout() {
+                manageOrientation(newConfig.orientation);
+
+                view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+            }
+        });
     }
 
     @Override
@@ -311,16 +357,18 @@ public class VideoActivity extends Activity implements ParserEventsListener {
             if (camera > 0 && camera < 5) {
                 webUri = jsonFlags.get_link_web(camera);
                 status = jsonFlags.get_webview_attivo(camera);
+            }else{
+                // se ho selezionato il mosaico apro il video del mosaico
+                status = WebViewStatus.FALSE;
             }
 
             switch (status) {
-                case FALSE:
-                    Toast.makeText(getApplicationContext(), "CAMERA INATTIVA", Toast.LENGTH_SHORT).show();
-                    break;
+                case TRUE:
                 case ONCLICK:
                     openWebView(webUri);
                     break;
-                case TRUE:
+                case FALSE:
+
                     currentCamera = camera;
 
                     if (resyncVideo)
@@ -390,6 +438,20 @@ public class VideoActivity extends Activity implements ParserEventsListener {
         if (tV != null && iV != null) {
             switch (cameraStatus) {
                 case TRUE:
+                    if(!uriWebView[camera-1].equals(jsonFlags.get_link_web(camera))){
+                        uriWebView[camera-1] = jsonFlags.get_link_web(camera);
+
+                        webViewOver[camera-1].getSettings().setJavaScriptEnabled(true);
+                        webViewOver[camera-1].setWebViewClient(new WebViewClient());
+                        webViewOver[camera-1].loadUrl(jsonFlags.get_link_web(camera).toString());
+                    }
+
+                    webViewOver[camera-1].setVisibility((currentCamera == 5 && jsonFlags.get_streaming_video()) ? View.VISIBLE : View.INVISIBLE);
+
+                    LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)webViewOver[camera - 1].getLayoutParams();
+                    params.height = (int)((double) webViewOver[camera - 1].getWidth() * internalVideoProportions);
+                    webViewOver[camera - 1].setLayoutParams(params);
+
                     if(Build.VERSION.SDK_INT >= 11) {
                         tV.setAlpha(currentCamera == camera ? CURRENT_ALPHA : AVAILABLE_ALPHA);
                         iV.setAlpha(currentCamera == camera ? CURRENT_ALPHA : AVAILABLE_ALPHA);
@@ -397,13 +459,16 @@ public class VideoActivity extends Activity implements ParserEventsListener {
                     tV.setText(cameraText);
                     break;
                 case FALSE:
+                    webViewOver[camera-1].setVisibility(View.INVISIBLE);
                     if(Build.VERSION.SDK_INT >= 11) {
-                        tV.setAlpha(DISABLED_ALPHA);
-                        iV.setAlpha(DISABLED_ALPHA);
+                        tV.setAlpha(currentCamera == camera ? CURRENT_ALPHA : AVAILABLE_ALPHA);
+                        iV.setAlpha(currentCamera == camera ? CURRENT_ALPHA : AVAILABLE_ALPHA);
                     }
                     tV.setText(cameraText);
                     break;
                 case ONCLICK:
+                    webViewOver[camera-1].setVisibility(View.INVISIBLE);
+
                     if(Build.VERSION.SDK_INT >= 11) {
                         tV.setAlpha(AVAILABLE_ALPHA);
                         iV.setAlpha(AVAILABLE_ALPHA);
@@ -487,6 +552,10 @@ public class VideoActivity extends Activity implements ParserEventsListener {
                         } else {
                             imageViewMosaico.setAlpha(0.5f);
                         }
+                    }
+                } else {
+                    for (int i = 0; i < 4; i++) {
+                        webViewOver[i].setVisibility(View.INVISIBLE);
                     }
                 }
             }

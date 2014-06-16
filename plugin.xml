@@ -54,6 +54,7 @@
 		<source-file src="src/it/weconstudio/utilities/JsonParser.java" target-dir="src/it/weconstudio/utilities/" />
 		<source-file src="src/it/weconstudio/utilities/ParserEventsListener.java" target-dir="src/it/weconstudio/utilities/" />
 		<source-file src="src/it/weconstudio/utilities/WebViewStatus.java" target-dir="src/it/weconstudio/utilities/" />
+		<source-file src="src/it/weconstudio/utilities/WeVideoViewSizeAvailable.java" target-dir="src/it/weconstudio/utilities/" />
 		
 		<source-file src="res/layout/activity_video.xml" target-dir="res/layout"/>
 		<source-file src="res/layout/activity_web.xml" target-dir="res/layout"/>

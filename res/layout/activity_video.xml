@@ -3,7 +3,7 @@
     android:layout_height="fill_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/relativeLayout"
-    android:background="#222222">
+    android:background="#222222"    >
 
     <ImageView
         android:layout_width="fill_parent"
@@ -77,15 +77,6 @@
         android:layout_marginLeft="8dp"
         android:layout_marginTop="9dp"
         android:layout_marginBottom="9dp" />
-
-    <ProgressBar
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/progressBarVideo"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:visibility="visible" />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -250,5 +241,100 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_weight="0.5">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1">
+
+                <WebView
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:id="@+id/webViewOver1"
+                    android:layout_gravity="bottom"
+                    android:visibility="invisible" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1">
+
+                <WebView
+                    android:layout_width="fill_parent"
+                    android:layout_height="100dp"
+                    android:id="@+id/webViewOver2"
+                    android:layout_gravity="bottom"
+                    android:visibility="invisible" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1">
+
+                <WebView
+                    android:layout_width="fill_parent"
+                    android:layout_height="100dp"
+                    android:id="@+id/webViewOver3"
+                    android:layout_gravity="center_vertical|top"
+                    android:visibility="invisible" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1">
+
+                <WebView
+                    android:layout_width="fill_parent"
+                    android:layout_height="100dp"
+                    android:id="@+id/webViewOver4"
+                    android:layout_gravity="top"
+                    android:visibility="invisible" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBarVideo"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="visible" />
+
 
 </RelativeLayout>
